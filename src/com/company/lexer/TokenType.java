@@ -51,7 +51,14 @@ public enum TokenType {
     //literały
     IDENTIFIER,             //np. przykladowaZmienna
     STRING,                 //np. "hello world"
-    INT,                    //np. 10
-    FLOAT                  //np. 10.5
+    NUMBER,                 //np. 10
+
+    //INT,                    //np. 10
+    //FLOAT,                  //np. 10.5
+    //zastąpione przez number
+
+    //pomocnicze
+    ERROR,
+    EOF
 
 }

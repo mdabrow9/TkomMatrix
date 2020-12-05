@@ -20,12 +20,12 @@ public class StringReader implements Source {
 
     @Override
     public char getNextChar() {
-        return code.charAt(nextCharIndex++);
+        return code.charAt(nextCharIndex);
     }
 
     @Override
     public boolean isEOF() {
-        return code.length()<=nextCharIndex;
+        return code.length()==nextCharIndex;
     }
 
     @Override

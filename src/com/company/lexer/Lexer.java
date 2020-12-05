@@ -1,20 +1,23 @@
 package com.company.lexer;
 
+import com.company.ErrorHandler.ErrorHandler;
 import com.company.source.Source;
 
 import java.util.HashMap;
 
 public class Lexer {
     private Source source;
-    private StringBuilder lexeme;
+    private StringBuilder lexeme = new StringBuilder();
 
     private Token token;
+    private Token previousToken;
 
-    private static HashMap<String,TokenType> keywords;
-    private static HashMap<Character,TokenType> singleCharacter;
-    private static HashMap<String,TokenType> doubleCharacter;
+    private static HashMap<String,TokenType> keywords = new HashMap<String,TokenType>();
+    private static HashMap<Character,TokenType> singleCharacter = new HashMap<Character,TokenType>();
+    private static HashMap<String,TokenType> doubleCharacter = new HashMap<String,TokenType>();
 
     static{
+
         keywords.put("return",TokenType.RETURN);
         keywords.put("function",TokenType.FUNCTION);
         keywords.put("matrix",TokenType.MATRIX);
@@ -61,6 +64,143 @@ public class Lexer {
         doubleCharacter.put("||",TokenType.OR);
         doubleCharacter.put("\\"+"\"",TokenType.STRING_QUOTE);
 
+    }
+
+    public Lexer(Source source) {
+        this.source = source;
+    }
+
+    public Token advanceToken()
+    {
+        previousToken = token;
+        skipWhitespace();
+        char c = advanceChar();
+
+
+        if(c == (char) -1)
+        {
+            token = new Token(TokenType.EOF,source.getPosition(),"");
+            return token;
+        }
+        var result = singleCharacter.get(c);
+        //wartość string
+        if(result == TokenType.QUOTE) //TODO przerobić na oddzielnie cudzysłów i oddzielnie tekst w razie czego
+        {
+            token  = getStringToken();
+            return token;
+        }
+
+        if(result!=null ||  c == '&')
+        {
+            char nextC = source.getNextChar();
+            if( nextC == '=' || nextC == '&' || nextC == '|' ) //dwuznakowy token
+            {
+                advanceChar();
+                var type = doubleCharacter.get(lexeme);
+                token = new Token(type,source.getPosition(),getLexeme());
+                return token;
+            }
+            else                                            //jednoznakowy token
+            {
+                var type = singleCharacter.get(Character.valueOf(lexeme.charAt(0)));
+                if(c == '&')
+                {
+                    token = new Token(TokenType.ERROR,source.getPosition(),getLexeme());
+                    ErrorHandler.stop("niepasujący token");
+                }
+                token = new Token(type,source.getPosition(),getLexeme());
+                return token;
+            }
+
+
+        }
+        //identifier lub keyword
+        if(Character.isLetter(c))
+        {
+            token = getIdentifierToken();
+            return token;
+        }
+        //liczba
+        if(Character.isDigit(c)) //TODO dowiedzieć się czy lepiej rozpoznawać na int czy float na lex czy par
+        {
+            token = getNumberToken();
+            return token;
+
+        }
+        token =new Token(TokenType.ERROR,source.getPosition(),getLexeme());
+        ErrorHandler.stop("niepasujący token");
+        return token;
+
+
+
+
+
+    }
+
+    private  Token getNumberToken()
+    {
+        char c;
+        while (Character.isDigit(source.getNextChar()))
+        {
+            c = advanceChar();
+        }
+        return new Token(TokenType.NUMBER,source.getPosition(),getLexeme());
+    }
+
+    private Token getIdentifierToken()
+    {
+        char c ;//= advanceChar();
+        while(Character.isLetterOrDigit(source.getNextChar()))
+        {
+            c = advanceChar();
+        }
+        String lex = getLexeme();
+        var keywordType = keywords.get(lex);
+        if(keywordType != null)
+        {
+            return new Token(keywordType,source.getPosition(),lex);
+        }
+
+        return new Token(TokenType.IDENTIFIER,source.getPosition(),lex);
+    }
+
+
+    private Token getStringToken()
+    {
+        char prev = 'a' , c = advanceChar();
+        while (c!= '"' || prev =='\\' )
+        {
+            prev = c;
+            c = advanceChar();
+        }
+        return new Token(TokenType.STRING,source.getPosition(),getLexeme());
+
+
+    }
+
+    private String getLexeme()
+    {
+        String result = lexeme.toString();
+        lexeme.setLength(0);
+        return result;
+    }
+    private char advanceChar()
+    {
+        char c = source.getChar();
+        lexeme.append(c);
+        return c;
+    }
+
+    private void skipWhitespace()
+    {
+        while(isWhitespace(source.getNextChar()))
+        {
+            source.getChar();
+        }
+    }
+    private boolean isWhitespace(char c)
+    {
+        return c == ' ' || c == '\n' || c == '\t';
     }
 
 

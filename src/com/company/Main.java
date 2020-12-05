@@ -1,6 +1,8 @@
 package com.company;
 
-import com.company.source.Source;
+import com.company.lexer.Lexer;
+import com.company.lexer.Token;
+import com.company.lexer.TokenType;
 import com.company.source.StringReader;
 
 public class Main {
@@ -8,12 +10,13 @@ public class Main {
     public static void main(String[] args) {
 	// write your code here
 
-        /*Source sr = new StringReader("dupa");
-        char c;
-        do {
-             c = sr.getChar();
-            System.out.println( c);
-        }while (c != (char) -1);*/
-        System.out.println("\\" + "\"");
+        Lexer lex = new Lexer(new StringReader(" ! "));
+        Token t = lex.advanceToken();
+        while(t.getType() != TokenType.EOF)
+        {
+            System.out.println(t.toString());
+            t=lex.advanceToken();
+        }
+
     }
 }
