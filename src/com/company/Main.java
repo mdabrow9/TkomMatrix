@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
 	// write your code here
 
-        /*Source sr = new StringReader("dupa");
+        /*Source sr = new StringReader("");
         char c;
         do {
              c = sr.getChar();
