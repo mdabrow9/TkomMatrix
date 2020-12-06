@@ -15,7 +15,7 @@ public class Token {
     public String toString() {
         return "Token{" +
                 "type=" + type +
-                ", position=[" + position.getLine() +","+position.getLine()+"]"+
+                ", position=[" + position.getLine() +","+position.getColumn()+"]"+
                 ", text='" + text + '\'' +
                 '}';
     }

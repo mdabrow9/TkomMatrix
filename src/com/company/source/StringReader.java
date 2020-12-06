@@ -8,25 +8,20 @@ public class StringReader implements Source {
     private int nextCharIndex = 0;
 
     public StringReader(String code) {
-        this.code = code;
+        this.code = code + (char)-1;
 
     }
 
     @Override
     public char getChar() {
-        if(isEOF()) return (char) -1;
-        else return code.charAt(nextCharIndex++);
+        return code.charAt(nextCharIndex++);
     }
 
     @Override
-    public char getNextChar() {
+    public char peekNextChar() {
         return code.charAt(nextCharIndex);
     }
 
-    @Override
-    public boolean isEOF() {
-        return code.length()==nextCharIndex;
-    }
 
     @Override
     public Position getPosition() {

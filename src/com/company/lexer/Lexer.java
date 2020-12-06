@@ -77,7 +77,7 @@ public class Lexer {
         char c = advanceChar();
 
 
-        if(c == (char) -1)
+        if(isEOF(c))
         {
             token = new Token(TokenType.EOF,source.getPosition(),"");
             return token;
@@ -92,11 +92,11 @@ public class Lexer {
 
         if(result!=null ||  c == '&')
         {
-            char nextC = source.getNextChar();
+            char nextC = source.peekNextChar();
             if( nextC == '=' || nextC == '&' || nextC == '|' ) //dwuznakowy token
             {
                 advanceChar();
-                var type = doubleCharacter.get(lexeme);
+                var type = doubleCharacter.get(lexeme.toString());
                 token = new Token(type,source.getPosition(),getLexeme());
                 return token;
             }
@@ -106,7 +106,9 @@ public class Lexer {
                 if(c == '&')
                 {
                     token = new Token(TokenType.ERROR,source.getPosition(),getLexeme());
+
                     ErrorHandler.stop("niepasujący token");
+                    return token;
                 }
                 token = new Token(type,source.getPosition(),getLexeme());
                 return token;
@@ -136,11 +138,15 @@ public class Lexer {
 
 
     }
+    private boolean isEOF(char c)
+    {
+        return c == (char) -1;
+    }
 
     private  Token getNumberToken()
     {
         char c;
-        while (Character.isDigit(source.getNextChar()))
+        while (Character.isDigit(source.peekNextChar()))
         {
             c = advanceChar();
         }
@@ -150,7 +156,7 @@ public class Lexer {
     private Token getIdentifierToken()
     {
         char c ;//= advanceChar();
-        while(Character.isLetterOrDigit(source.getNextChar()))
+        while(Character.isLetterOrDigit(source.peekNextChar()))
         {
             c = advanceChar();
         }
@@ -170,8 +176,19 @@ public class Lexer {
         char prev = 'a' , c = advanceChar();
         while (c!= '"' || prev =='\\' )
         {
+            if(c =='"') //usuwanie '\'
+            {
+                lexeme.deleteCharAt(lexeme.length()-2);
+            }
+
             prev = c;
             c = advanceChar();
+            if(isEOF(c))
+            {
+                token =new Token(TokenType.ERROR,source.getPosition(),getLexeme());
+                ErrorHandler.stop("niepasujący token: nie zakończony string");
+                return token;
+            }
         }
         return new Token(TokenType.STRING,source.getPosition(),getLexeme());
 
@@ -193,7 +210,7 @@ public class Lexer {
 
     private void skipWhitespace()
     {
-        while(isWhitespace(source.getNextChar()))
+        while(isWhitespace(source.peekNextChar()))
         {
             source.getChar();
         }
