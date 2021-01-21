@@ -3,6 +3,7 @@ package com.company.lexer;
 import com.company.ErrorHandler.ErrorHandler;
 import com.company.source.Source;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 public class Lexer {
@@ -20,16 +21,16 @@ public class Lexer {
 
         keywords.put("return",TokenType.RETURN);
         keywords.put("function",TokenType.FUNCTION);
-        keywords.put("matrix",TokenType.MATRIX);
+        keywords.put("matrix",TokenType.MATRIX_T);
         keywords.put("int",TokenType.INT_T);
         keywords.put("float",TokenType.FLOAT_T);
         keywords.put("string",TokenType.STRING_T);
         keywords.put("if",TokenType.IF);
         keywords.put("else",TokenType.ELSE);
         keywords.put("while",TokenType.WHILE);
-        keywords.put("print",TokenType.PRINT);
+        /*keywords.put("print",TokenType.PRINT);
         keywords.put("getCol",TokenType.GET_COL);
-        keywords.put("getRow",TokenType.GET_ROW);
+        keywords.put("getRow",TokenType.GET_ROW);*/
 
 
         singleCharacter.put('(',TokenType.LEFT_ROUND_BRACKET);
@@ -70,6 +71,10 @@ public class Lexer {
         this.source = source;
     }
 
+    public Token getToken() {
+        return token;
+    }
+
     public Token advanceToken()
     {
         previousToken = token;
@@ -84,7 +89,7 @@ public class Lexer {
         }
         var result = singleCharacter.get(c);
         //wartość string
-        if(result == TokenType.QUOTE) //TODO przerobić na oddzielnie cudzysłów i oddzielnie tekst w razie czego
+        if(result == TokenType.QUOTE)
         {
             token  = getStringToken();
             return token;
@@ -93,7 +98,7 @@ public class Lexer {
         if(result!=null ||  c == '&')
         {
             char nextC = source.peekNextChar();
-            if( nextC == '=' || nextC == '&' || nextC == '|' ) //dwuznakowy token
+            if( nextC == '=' && (c=='=' || c=='!' || c=='<' || c=='>') || nextC == '&'&& c=='&' || nextC == '|'&& c =='|' ) //dwuznakowy token
             {
                 advanceChar();
                 var type = doubleCharacter.get(lexeme.toString());
@@ -123,7 +128,7 @@ public class Lexer {
             return token;
         }
         //liczba
-        if(Character.isDigit(c)) //TODO dowiedzieć się czy lepiej rozpoznawać na int czy float na lex czy par
+        if(Character.isDigit(c))
         {
             token = getNumberToken();
             return token;
@@ -143,14 +148,48 @@ public class Lexer {
         return c == (char) -1;
     }
 
-    private  Token getNumberToken()
+    private int getNumberLexeme()
     {
-        char c;
+        char c =lexeme.charAt(lexeme.length()-1);
+        if(!Character.isDigit(c)) ErrorHandler.stop("niepasujący token");
+        int number=Integer.parseInt(String.valueOf(c));
         while (Character.isDigit(source.peekNextChar()))
         {
             c = advanceChar();
+            number *=10;
+            number += Integer.parseInt(String.valueOf(c));
         }
-        return new Token(TokenType.NUMBER,source.getPosition(),getLexeme());
+
+        return number;
+    }
+
+
+    private  Token getNumberToken()
+    {
+
+        int number = getNumberLexeme();
+
+        if(source.peekNextChar() == '.') //float
+        {
+            advanceChar();
+            char c = advanceChar();
+            int deciaml = getNumberLexeme();
+            String aFloat=  getLexeme();
+            //if()
+
+
+
+
+            return new Token(TokenType.FLOAT,source.getPosition(),new BigDecimal(aFloat));
+
+
+
+        }else //int
+        {
+            getLexeme();
+            return new Token(TokenType.INT,source.getPosition(),number);
+        }
+
     }
 
     private Token getIdentifierToken()

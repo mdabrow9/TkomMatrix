@@ -37,7 +37,7 @@ public enum TokenType {
     //SŁOWA KLUCZOWE
     RETURN,                 //return
     FUNCTION,               //function
-    MATRIX,                 //matrix
+    MATRIX_T,               //matrix
     INT_T,                  //int
     FLOAT_T,                //float
     STRING_T,               //string
@@ -51,10 +51,10 @@ public enum TokenType {
     //literały
     IDENTIFIER,             //np. przykladowaZmienna
     STRING,                 //np. "hello world"
-    NUMBER,                 //np. 10
+    //NUMBER,                 //np. 10
 
-    //INT,                    //np. 10
-    //FLOAT,                  //np. 10.5
+    INT,                    //np. 10
+    FLOAT,                  //np. 10.5
     //zastąpione przez number
 
     //pomocnicze

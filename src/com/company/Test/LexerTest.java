@@ -47,9 +47,9 @@ public class LexerTest {
 
         var tokens = getTokens(code);
         int i =0;
-        assertTrue(tokens.get(i++).getType() == TokenType.MATRIX);
+        assertTrue(tokens.get(i++).getType() == TokenType.MATRIX_T);
         assertTrue(tokens.get(i++).getType() == TokenType.LESS);
-        assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+        assertTrue(tokens.get(i++).getType() == TokenType.INT);
         assertTrue(tokens.get(i++).getType() == TokenType.COMA);
         assertTrue(tokens.get(i++).getType() == TokenType.IDENTIFIER);
         assertTrue(tokens.get(i++).getType() == TokenType.GREATER);
@@ -59,16 +59,16 @@ public class LexerTest {
         for(int k =0 ;k<2;k++)
         {
             assertTrue(tokens.get(i++).getType() == TokenType.LEFT_SQUARE_BRACKET);
-            assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+            assertTrue(tokens.get(i++).getType() == TokenType.INT);
             assertTrue(tokens.get(i++).getType() == TokenType.COMA);
-            assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+            assertTrue(tokens.get(i++).getType() == TokenType.INT);
             assertTrue(tokens.get(i++).getType() == TokenType.RIGHT_SQUARE_BRACKET);
             assertTrue(tokens.get(i++).getType() == TokenType.COMA); //[1,3],
         }
             assertTrue(tokens.get(i++).getType() == TokenType.LEFT_SQUARE_BRACKET);
-            assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+            assertTrue(tokens.get(i++).getType() == TokenType.INT);
             assertTrue(tokens.get(i++).getType() == TokenType.COMA);
-            assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+            assertTrue(tokens.get(i++).getType() == TokenType.INT);
             assertTrue(tokens.get(i++).getType() == TokenType.RIGHT_SQUARE_BRACKET);
 
 
@@ -111,7 +111,7 @@ public class LexerTest {
         assertTrue(tokens.get(i++).getType() == TokenType.INT_T);
         assertTrue(tokens.get(i++).getType() == TokenType.STRING_T);
         assertTrue(tokens.get(i++).getType() == TokenType.FLOAT_T);
-        assertTrue(tokens.get(i++).getType() == TokenType.MATRIX);
+        assertTrue(tokens.get(i++).getType() == TokenType.MATRIX_T);
         assertTrue(tokens.get(i++).getType() == TokenType.IF);
         assertTrue(tokens.get(i++).getType() == TokenType.ELSE);
         assertTrue(tokens.get(i++).getType() == TokenType.WHILE);
@@ -133,7 +133,7 @@ public class LexerTest {
         assertTrue(tokens.get(i++).getType() == TokenType.LEFT_ROUND_BRACKET);
         assertTrue(tokens.get(i++).getType() == TokenType.IDENTIFIER);
         assertTrue(tokens.get(i++).getType() == TokenType.EQUALS);
-        assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+        assertTrue(tokens.get(i++).getType() == TokenType.INT);
         assertTrue(tokens.get(i++).getType() == TokenType.OR);
         assertTrue(tokens.get(i++).getType() == TokenType.LEFT_ROUND_BRACKET);
         assertTrue(tokens.get(i++).getType() == TokenType.IDENTIFIER);
@@ -145,13 +145,16 @@ public class LexerTest {
         assertTrue(tokens.get(i++).getType() == TokenType.IDENTIFIER);
         assertTrue(tokens.get(i++).getType() == TokenType.PIPE);
         assertTrue(tokens.get(i++).getType() == TokenType.AND);
-        assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+        /*assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
         assertTrue(tokens.get(i++).getType() == TokenType.DOT);
-        assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+        assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);*/
+        assertTrue(tokens.get(i++).getType() == TokenType.FLOAT);
+
         assertTrue(tokens.get(i++).getType() == TokenType.LESS_EQUAL);
-        assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+        /*assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
         assertTrue(tokens.get(i++).getType() == TokenType.DOT);
-        assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+        assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);*/
+        assertTrue(tokens.get(i++).getType() == TokenType.FLOAT);
         assertTrue(tokens.get(i++).getType() == TokenType.RIGHT_ROUND_BRACKET);
         assertTrue(tokens.get(i++).getType() == TokenType.RIGHT_ROUND_BRACKET);
 
@@ -183,7 +186,7 @@ public class LexerTest {
         assertTrue(tokens.get(i++).getType() == TokenType.LEFT_ROUND_BRACKET);
         assertTrue(tokens.get(i++).getType() == TokenType.IDENTIFIER);
         assertTrue(tokens.get(i++).getType() == TokenType.GREATER_EQUAL);
-        assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+        assertTrue(tokens.get(i++).getType() == TokenType.INT);
         assertTrue(tokens.get(i++).getType() == TokenType.RIGHT_ROUND_BRACKET);
         assertTrue(tokens.get(i++).getType() == TokenType.LEFT_CURLY_BRACKET);
             assertTrue(tokens.get(i++).getType() == TokenType.PRINT);
@@ -195,11 +198,11 @@ public class LexerTest {
                 assertTrue(tokens.get(i++).getType() == TokenType.LEFT_ROUND_BRACKET);
                 assertTrue(tokens.get(i++).getType() == TokenType.IDENTIFIER);
                 assertTrue(tokens.get(i++).getType() == TokenType.EQUALS);
-                assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+                assertTrue(tokens.get(i++).getType() == TokenType.INT);
                 assertTrue(tokens.get(i++).getType() == TokenType.OR);
                 assertTrue(tokens.get(i++).getType() == TokenType.IDENTIFIER);
                 assertTrue(tokens.get(i++).getType() == TokenType.EQUALS);
-                assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+                assertTrue(tokens.get(i++).getType() == TokenType.INT);
                 assertTrue(tokens.get(i++).getType() == TokenType.RIGHT_ROUND_BRACKET);
             assertTrue(tokens.get(i++).getType() == TokenType.LEFT_CURLY_BRACKET);
                 assertTrue(tokens.get(i++).getType() == TokenType.PRINT);
@@ -215,7 +218,7 @@ public class LexerTest {
         assertTrue(tokens.get(i++).getType() == TokenType.EQUAL);
         assertTrue(tokens.get(i++).getType() == TokenType.IDENTIFIER);
         assertTrue(tokens.get(i++).getType() == TokenType.MINUS);
-        assertTrue(tokens.get(i++).getType() == TokenType.NUMBER);
+        assertTrue(tokens.get(i++).getType() == TokenType.INT);
         assertTrue(tokens.get(i++).getType() == TokenType.SEMICOLON);
         assertTrue(tokens.get(i++).getType() == TokenType.RIGHT_CURLY_BRACKET);
         assertTrue(tokens.get(i++).getType() == TokenType.EOF);
