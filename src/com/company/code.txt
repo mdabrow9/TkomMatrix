@@ -1,0 +1,16 @@
+function int main()
+{
+    int foo = 3;
+     int x = foo;
+
+      return foo2(2);
+}
+
+function int foo2(int a)
+{
+
+   int b;
+
+}
+
+
