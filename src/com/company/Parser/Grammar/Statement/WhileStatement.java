@@ -16,6 +16,22 @@ public class WhileStatement extends Statement {
 
     @Override
     public Object execute(Scope scope) {
+
+        while((Boolean) condition.evaluate(scope))
+        {
+            //wykonywanie statmentów
+            for (Statement statement : body)
+            {
+                if(statement instanceof ReturnStatement)
+                {
+                    return statement;
+                }
+                statement.execute(scope);
+
+
+            }
+        }
         return null;
+
     }
 }

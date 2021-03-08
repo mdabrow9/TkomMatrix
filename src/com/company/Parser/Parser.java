@@ -141,7 +141,7 @@ public class Parser {
             val = parseExpression();
         }
         acceptAndAdvanceToken(TokenType.SEMICOLON);
-        return new DeclarationStatement(typeToken.getType(),val,id.getTextValue());
+        return new DeclarationStatement(typeToken.getType(),val,id.getTextValue(),false);
     }
     private DeclarationStatement parseMatrixDeclaration(Token typeToken)
     {
@@ -159,7 +159,7 @@ public class Parser {
             val = parseExpression();
         }
         acceptAndAdvanceToken(TokenType.SEMICOLON);
-        return new DeclarationStatement(typeToken.getType(),val,id.getTextValue(),row,col);
+        return new DeclarationStatement(typeToken.getType(),val,id.getTextValue(),row,col,false);
 
     }
 
@@ -281,16 +281,24 @@ public class Parser {
     private Expression parseMultiplicative()
     {
         Expression expr = parseUnary();
-        while(peekToken()== TokenType.SLASH || peekToken()== TokenType.STAR )
+        while(peekToken()== TokenType.SLASH || peekToken()== TokenType.STAR  || peekToken()== TokenType.HASHTAG)
         {
-            Token token = acceptAndAdvanceToken(TokenType.SLASH,TokenType.STAR);
+            Token token = acceptAndAdvanceToken(TokenType.SLASH,TokenType.STAR,TokenType.HASHTAG);
             Expression right = parseUnary();
 
 
             if(token.getType() == TokenType.STAR)
             {
                 expr= new Multiplication(expr,right,token);
-            }else expr= new Division(expr,right,token);
+            }
+            else if(token.getType() ==TokenType.SLASH)
+            {
+                expr= new Division(expr,right,token);
+            }
+            else if(token.getType() == TokenType.HASHTAG)
+            {
+                expr = new MatrixDotMultiplication(expr,right,token);
+            }
         }
 
         return expr;
@@ -355,11 +363,11 @@ public class Parser {
                 if(peekToken() == TokenType.LEFT_SQUARE_BRACKET)
                 {
                     Token item = acceptAndAdvanceToken(TokenType.LEFT_SQUARE_BRACKET);
-                    Token row = acceptAndAdvanceToken(TokenType.INT);
+                    Expression row = parseExpression();
                     acceptAndAdvanceToken(TokenType.COMA);
-                    Token col = acceptAndAdvanceToken(TokenType.INT);
+                    Expression col = parseExpression();
                     acceptAndAdvanceToken(TokenType.RIGHT_SQUARE_BRACKET);
-                    return new MatrixElement(new Identifier(token),item,col.getIntValue(),row.getIntValue());
+                    return new MatrixElement(new Identifier(token),item,col,row);
                 }
                 else if(peekToken() == TokenType.LEFT_ROUND_BRACKET)
                 {
@@ -468,7 +476,22 @@ public class Parser {
 
     private DeclarationStatement parseVarDeclaration()
     {
-        return new DeclarationStatement(acceptAndAdvanceToken(VarToken).getType(),null,acceptAndAdvanceToken(TokenType.IDENTIFIER).getTextValue());
+
+        Token type = acceptAndAdvanceToken(VarToken);
+        if(type.getType() == TokenType.MATRIX_T && peekToken() == TokenType.LESS)
+        {
+            acceptAndAdvanceToken(TokenType.LESS);
+            Expression row = parseAdditiveExpr();
+            acceptAndAdvanceToken(TokenType.COMA);
+            Expression col = parseAdditiveExpr();
+            acceptAndAdvanceToken(TokenType.GREATER);
+
+            Token id = acceptAndAdvanceToken(TokenType.IDENTIFIER);
+
+            return new DeclarationStatement(type.getType(),null,id.getTextValue(),row,col,true);
+        }
+
+        return new DeclarationStatement(type.getType(),null,acceptAndAdvanceToken(TokenType.IDENTIFIER).getTextValue(),true);
     }
 
 

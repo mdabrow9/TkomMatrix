@@ -20,6 +20,34 @@ public   class  IfStatement extends Statement
 
     @Override
     public Object execute(Scope scope) {
+
+        if((Boolean) condition.evaluate(scope))
+        {
+            //wykonywanie statmentów
+            for (Statement statement : ifBody)
+            {
+                if(statement instanceof ReturnStatement)
+                {
+                    return statement;
+                }
+                statement.execute(scope);
+            }
+        }
+        else
+        {
+            if(elseBody != null)
+            {
+                //wykonywanie statmentów
+                for (Statement statement : elseBody)
+                {
+                    if(statement instanceof ReturnStatement)
+                    {
+                        return statement;
+                    }
+                    statement.execute(scope);
+                }
+            }
+        }
         return null;
     }
 }

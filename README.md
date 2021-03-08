@@ -1,3 +1,2 @@
 # TkomMatrix
-
-Własny kompilator do języka programowania z wbudowanym wsparciem dla macierzy
+Kompilator do własnego języka z wbudownym typem macierzowym wykonany w ramach zajęć Techniki kompilacji.

@@ -31,19 +31,17 @@ public class AssignStatement extends Statement {
                 || val instanceof MatrixVar && variableType != TokenType.MATRIX_T
                 || val instanceof BigDecimal && variableType != TokenType.FLOAT_T
         ) {
-            ErrorHandler.stop("Błąd typ wartości inna niż deklarowany");
+            ErrorHandler.stop("próba przypisania do zmiennej: " + var + ", o typie: "+ variableType.name() + " wartość innego typu");
         }
 
         if (variableType == TokenType.MATRIX_T) {
 
             if (((MatrixVar) variable.value).row != ((MatrixVar) val).row || ((MatrixVar) variable.value).col != ((MatrixVar) val).col) {
-                ErrorHandler.stop("Próba przypisania macirzy: "+((MatrixVar) val).col+"x"+((MatrixVar) val).row +" do macierzy o rozmiarze: "+((MatrixVar) variable.value).col+"x"+((MatrixVar) variable.value).row);
+                ErrorHandler.stop("Próba przypisania macirzy: "+((MatrixVar) val).row+"x"+((MatrixVar) val).col +" do macierzy "+var  + "  o rozmiarze: "+((MatrixVar) variable.value).row+"x"+((MatrixVar) variable.value).col);
             }
 
 
         }
-
-
         scope.setVarValue(this.var, val);
 
         return null;

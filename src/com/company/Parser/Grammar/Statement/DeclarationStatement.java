@@ -18,19 +18,22 @@ public class DeclarationStatement extends Statement {
     public String name;
     public Expression row=null;
     public Expression col=null;
+    public Boolean isParameter ;
 
-    public DeclarationStatement(TokenType variableType, Expression value, String name, Expression row, Expression col) {
+    public DeclarationStatement(TokenType variableType, Expression value, String name, Expression row, Expression col , Boolean isParameter) {
         this.variableType = variableType;
         this.value = value;
         this.name = name;
         this.row = row;
         this.col = col;
+        this.isParameter = isParameter;
     }
 
-    public DeclarationStatement(TokenType variableType, Expression value, String name) {
+    public DeclarationStatement(TokenType variableType, Expression value, String name, Boolean isParameter) {
         this.variableType = variableType;
         this.value = value;
         this.name = name;
+        this.isParameter = isParameter;
 
     }
 
@@ -47,7 +50,7 @@ public class DeclarationStatement extends Statement {
                 var r = this.row.evaluate(scope);
 
                 if (c instanceof Integer && r instanceof Integer) {
-                } else ErrorHandler.stop("deklaracja wierszy i kolumn musi być liczbą całkowitą");
+                } else ErrorHandler.stop("deklaracja ilości wierszy i kolumn musi być liczbą całkowitą");
 
                 if (value != null)
                 {
@@ -78,10 +81,20 @@ public class DeclarationStatement extends Statement {
             }
             else
             {
-                if(value == null)
+                if(!isParameter)
                 {
-                    ErrorHandler.stop("brak deklaracji rozmiarów macierzy");
+                    if(value == null)
+                    {
+                        ErrorHandler.stop("brak deklaracji rozmiarów macierzy "+"Błąd napotkany podczas deklaracji zmiennej: "+this.name );
+                    }
+                    var val = value.evaluate(scope);
+                    if(val instanceof MatrixVar)
+                    {
+                        scope.setVarValue(name,val);
+                    }
+                    else ErrorHandler.stop("typ wartości inny niż deklarowany "+"Błąd napotkany podczas deklaracji zmiennej: "+this.name);
                 }
+
             }
             return null;
         }
@@ -89,14 +102,28 @@ public class DeclarationStatement extends Statement {
         if(value != null)
         {
             var val = value.evaluate(scope);
+            if(val instanceof Literal)
+            {
+                //var val = value.evaluate(scope);
+                var val2 = ((Literal) val).value;
+                if(val2 instanceof String && variableType != TokenType.STRING_T
+                        || val2 instanceof Integer && variableType != TokenType.INT_T
+                        || val2 instanceof MatrixVar && variableType != TokenType.MATRIX_T
+                        || val2 instanceof BigDecimal && variableType != TokenType.FLOAT_T
+                )
+                {
+                    ErrorHandler.stop("Błąd typ wartości inna niż deklarowany "+"Błąd napotkany podczas deklaracji zmiennej: "+this.name);
+                }
 
+                scope.setVarValue(name,val2);
+            }
             if(val instanceof String && variableType != TokenType.STRING_T
                     || val instanceof Integer && variableType != TokenType.INT_T
                     || val instanceof MatrixVar && variableType != TokenType.MATRIX_T
                     || val instanceof BigDecimal && variableType != TokenType.FLOAT_T
             )
             {
-                ErrorHandler.stop("Błąd typ wartości inna niż deklarowany");
+                ErrorHandler.stop("Błąd typ wartości inna niż deklarowany " +"Błąd napotkany podczas deklaracji zmiennej: "+this.name);
             }
 
             scope.setVarValue(name,val);

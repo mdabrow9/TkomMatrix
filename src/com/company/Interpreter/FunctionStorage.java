@@ -10,6 +10,7 @@ public class FunctionStorage
 
     public static void setFunctions(HashMap<String, FunctionStatement> functions) {
         FunctionStorage.functions = functions;
+        return;
     }
 
     public static HashMap<String, FunctionStatement> getFunctions() {

@@ -1,5 +1,6 @@
 package com.company.Parser.Grammar.Statement;
 
+import com.company.ErrorHandler.ErrorHandler;
 import com.company.Interpreter.FunctionStorage;
 import com.company.Interpreter.Scope;
 import com.company.Parser.Grammar.Expression.Expression;
@@ -24,29 +25,52 @@ public class FunctionCallStatement extends Statement {
 
         if(identifier.equals("print") || identifier.equals( "getCol") || identifier.equals( "getRow"))
         {
-            executeSystemFunction( scope,  arguments);
-            return null;
+
+            return executeSystemFunction( scope,  arguments);
         }
         return FunctionStorage.getFunctions().get(identifier).execute(scope,arguments);
     }
-    private void executeSystemFunction(Scope scope, List<Expression> arguments)
+    private Object executeSystemFunction(Scope scope, List<Expression> arguments)
     {
 
         if(identifier.equals("print"))
-        {   //TODO jeszcze trzeba dobrze to przetestować
+        {
+            if(arguments.size() != 1) ErrorHandler.stop("nie poprawna ilość argumentów podczas wywołania funkcji " + identifier );
             var toPrint = arguments.get(0).evaluate(scope);
             if(toPrint==null)
             {
-                System.out.println("null");
+                System.out.print("null");
+                return null;
             }
             if(toPrint instanceof MatrixVar)
             {
 
                 System.out.println(((MatrixVar) toPrint).toString(scope) );
-                return;
+                return null;
             }
-            System.out.println((arguments.get(0).evaluate(scope)).toString());
-            return;
+            System.out.println(toPrint);
+            return null;
         }
+        if (identifier.equals("getCol"))
+        {
+            if(arguments.size() != 1) ErrorHandler.stop("nie poprawna ilość argumentów podczas wywołania funkcji " + identifier );
+            var arg = arguments.get(0).evaluate(scope);
+            if(arg instanceof MatrixVar)
+            {
+                return ((MatrixVar) arg).col;
+            }
+            ErrorHandler.stop("podczas wywołania funkcji " + identifier+ ": operacja dostępna tylko na macierzach");
+        }
+        if(identifier.equals("getRow"))
+        {
+            if(arguments.size() != 1) ErrorHandler.stop("nie poprawna ilość argumentów podczas wywołania funkcji " + identifier );
+            var arg = arguments.get(0).evaluate(scope);
+            if(arg instanceof MatrixVar)
+            {
+                return ((MatrixVar) arg).row;
+            }
+            ErrorHandler.stop( "podczas wywołania funkcji " + identifier+ " operacja dostępna tylko na macierzach");
+        }
+        return null;
     }
 }

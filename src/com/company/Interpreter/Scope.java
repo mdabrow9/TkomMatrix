@@ -1,18 +1,23 @@
 package com.company.Interpreter;
 
 import com.company.ErrorHandler.ErrorHandler;
-import com.company.Parser.Grammar.Statement.FunctionStatement;
 import com.company.Parser.Grammar.Variable;
 
 import java.util.HashMap;
 
 public class Scope {
     public HashMap<String, Variable> variables = new HashMap<>();
-    private HashMap<String, FunctionStatement> functions;
+    //private HashMap<String, FunctionStatement> functions;
 
+    public Scope() {
+
+    }
+    /*
     public Scope(HashMap<String, FunctionStatement> functions) {
         this.functions = functions;
     }
+
+     */
 
     public boolean contains (String name)
     {
@@ -23,7 +28,7 @@ public class Scope {
     {
         if(contains(var.name))
         {
-            ErrorHandler.stop("Błąd Interpretera: Zduplikowana nazwa zmiennej" );
+            ErrorHandler.stop("Zduplikowana nazwa zmiennej: " + var.name );
         }
         else
         {
@@ -32,7 +37,7 @@ public class Scope {
     }
     public Variable getVar(String name)
     {
-        if(!contains(name)) ErrorHandler.stop("Błąd interpretera: Brak definicji zmiennej");
+        if(!contains(name)) ErrorHandler.stop("Brak definicji zmiennej: " + name);
         var variable = variables.get(name);
         return variable;
     }

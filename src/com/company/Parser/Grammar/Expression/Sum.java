@@ -22,7 +22,8 @@ public class Sum extends AdditiveExpr{
        {
            if(left instanceof Integer && right instanceof Integer)
            {
-               var ret =new Literal((int)left + (int)right , new Token(TokenType.INT,null,0));
+               var ret =(int)left + (int)right ;
+
                return ret;
 
            }
@@ -38,7 +39,7 @@ public class Sum extends AdditiveExpr{
            {
                return  ((BigDecimal)right).add(new BigDecimal ((int)left ));
            }
-           ErrorHandler.stop("nie obsługiwana operacja !!!");
+           ErrorHandler.stop("nie obsługiwana operacja sum!!!" + (operator.getPosition()!=null?  operator.getPosition().toString() : ""));
        }
         if(left instanceof MatrixVar || right instanceof MatrixVar) //dodawanie macierzy
         {
@@ -46,14 +47,14 @@ public class Sum extends AdditiveExpr{
             {
                 return ((MatrixVar) left).add(((MatrixVar) right), scope);
             }
-            ErrorHandler.stop("Obie strony równiania muszą być macierzą");
+            ErrorHandler.stop("Obie strony równiania muszą być macierzą" + (operator.getPosition()!=null?  operator.getPosition().toString() : ""));
         }
         if(left instanceof String || right instanceof String)
         {
             return left.toString() + right.toString();
         }
 
-        ErrorHandler.stop("nie obsługiwana operacja !!!");
+        ErrorHandler.stop("nie obsługiwana operacja suma!!!" + (operator.getPosition()!=null?  operator.getPosition().toString() : ""));
         return null;
     }
 

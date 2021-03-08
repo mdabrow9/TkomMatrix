@@ -16,6 +16,6 @@ public class ReturnStatement extends Statement {
 
     @Override
     public Object execute(Scope scope) {
-        return null;
+        return expression.evaluate(scope);
     }
 }

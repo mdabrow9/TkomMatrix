@@ -20,7 +20,7 @@ public class Identifier extends  Expression{
         Object value = scope.getVar(name).value;
         if(value == null)
         {
-            ErrorHandler.stop("Zmienna: " + name+ " nie ma zadeklarowaniej wartości");
+            ErrorHandler.stop("Zmienna: " + name+ " nie ma zadeklarowaniej wartości" + (token.getPosition()!=null?  token.getPosition().toString() : ""));
         }
 
         return value;

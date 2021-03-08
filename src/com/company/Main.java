@@ -11,6 +11,7 @@ import com.company.Parser.Parser;
 import com.company.lexer.Lexer;
 import com.company.lexer.Token;
 import com.company.lexer.TokenType;
+import com.company.source.CodeReader;
 import com.company.source.StringReader;
 
 public class Main {
@@ -18,57 +19,31 @@ public class Main {
     public static void main(String[] args) {
 	// write your code here
 
-        String code ="if  \"" + "\\"+"\"" +"hello world"+ "\\"+"\"" +"\"  ";
-        code = "matrix <3,i> m1 = {[1,3],\n[3,1],\n[1,0]};";
-        code = "{[2+2,3],[3,1],[1,0,4]}";
-        code = "function int main(int a, matrix b) " +
-                "{ " +
-                "if( {[1,3],[3,1],[1,0]} < 1  && |foo2(a , 3 ,3.5 )| > a[2,4] )" +
-                "{ " +
-                    "while(1>0) " +
-                    "{ " +
-                        "Print(\"text\"); " +
-                    "} " +
-                "} " +
-                "}" + "function int foo() { int a =3+1*25/3;" +
-                "a = 5;" +
-                "return a;}"
-        ;
-
-
-
-        code = "function int main() " +
-                "{ " +
-                "matrix <2,2> a  ;"
-                +
-                "print(a);"
-                +"a =  {[1,3],[3,1],[1,0]}; "
-                +
-                "print(a);" +
-
-                "}" ;
-
-
-        Lexer lex = new Lexer(new StringReader(code));
-
-
-        /*Token t = lex.advanceToken();
-        System.out.println(t.toString());
-
-        while (t.getType() != TokenType.EOF)
+        //src\com\company\code.txt
+        if(args.length != 1)
         {
-            t = lex.advanceToken();
-            System.out.println(t.toString());
-        }*/
+            System.out.println("Niepoprawna ilość argumentów, jako argument podaj tylko scieżkę do pliku z kodem źródłowym");
+        }
 
+        Lexer lex = new Lexer(new CodeReader(args[0]));
 
+        //Lexer lex = new Lexer(new CodeReader("src\\com\\company\\code.txt"));
         Parser parser = new Parser(lex);
 
-        var lel = parser.parse();
+        var functions = parser.parse();
+        Object returned =  Interpreter.run(functions);
 
-        Interpreter.run(lel);
+        if(returned instanceof MatrixVar)
+        {
 
-        System.out.println( "koniec");
+            System.out.println("Proces zwrócił: " + ((MatrixVar) returned).toString(null) );
+
+        }
+        else
+        {
+            System.out.println( "Proces zwrócił: " + returned);
+        }
+
 
 
     }
